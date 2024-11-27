@@ -361,7 +361,12 @@ images_to_h5 <- function(sce, h5obj, image_name = NULL) {
   images <- h5obj$create_group("images")
   scale_factors <- sceimage@scale.factors
   images[["image"]] <- sceimage@image
-  images[["coords"]] <- sceimage@boundaries[["centroids"]]@coords
+  # use with Visium version 1
+  centroids <- sceimage@coordinates
+  centroid_coords <- as.matrix(centroids[, c("imagecol", "imagerow")])
+  images[["coords"]] <- centroid_coords
+  images[["radius"]] <- sceimage@spot.radius
+  # images[["coords"]] <- sceimage@boundaries[["centroids"]]@coords
   # images[["radius"]] <- sceimage@boundaries[["centroids"]]@radius
   scalefactors <- images$create_group("scale_factors")
   scalefactors[["spot"]] <- scale_factors$spot
